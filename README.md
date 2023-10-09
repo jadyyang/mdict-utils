@@ -3,6 +3,7 @@
 本代码库是从 [liuyug/mdict-utils](https://github.com/liuyug/mdict-utils) fork 而来。主要是为了解决这些问题：
 1. pack时控制key是否再次排序
 2. 资源key的开头和路径分隔符不合理
+3. mdx/mdd header信息不能设置
 
 其他保持原框架的功能和使用方式不变，详细参见 [liuyug/mdict-utils 说明文档](./OLD-README.rst)
 
@@ -47,3 +48,7 @@ python /Users/jadyyang/code/ienglish/mdict-utils/mdict_utils --title /Users/jady
 ```
 
 注意：打包 mdd 文件时，最好不要加 `--sort no` 参数，还是需要排序的。因为读取文件时，并不能确定是什么顺序，所以还是需要排序的。
+
+## mdx/mdd header信息不能设置
+
+这是暂时还没有改
