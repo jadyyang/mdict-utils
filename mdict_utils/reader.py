@@ -6,8 +6,8 @@ import zlib
 
 from tqdm import tqdm
 
-from .base.readmdict import MDX, MDD
-from .chtml import CompactHTML
+from mdict_utils.base.readmdict import MDX, MDD
+from mdict_utils.chtml import CompactHTML
 
 
 def meta(source, substyle=False, passcode=None):

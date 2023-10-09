@@ -12,7 +12,7 @@ from html import escape
 
 from tqdm import tqdm
 
-from .base.writemdict import MDictWriter as MDictWriterBase, \
+from mdict_utils.base.writemdict import MDictWriter as MDictWriterBase, \
     _MdxRecordBlock as _MdxRecordBlockBase,  \
     _OffsetTableEntry as _OffsetTableEntryBase
 
@@ -110,9 +110,11 @@ class MDictWriter(MDictWriterBase):
                  register_by=None,
                  user_email=None,
                  user_device_id=None,
-                 is_mdd=False):
+                 is_mdd=False,
+                 is_sort=False):
         self._key_block_size = key_size
         self._record_block_size = record_size
+        self._is_sort = is_sort
         # disable encrypt
         super(MDictWriter, self).__init__(
             d, title, description,
@@ -151,10 +153,11 @@ class MDictWriter(MDictWriterBase):
                 return 1
             return 0
 
-        pattern = '[%s ]+' % string.punctuation
-        regex_strip = re.compile(pattern)
+        if self._is_sort:
+            pattern = '[%s ]+' % string.punctuation
+            regex_strip = re.compile(pattern)
 
-        items.sort(key=functools.cmp_to_key(mdict_cmp))
+            items.sort(key=functools.cmp_to_key(mdict_cmp))
 
         self._offset_table = []
         offset = 0
@@ -303,14 +306,14 @@ class MDictWriter(MDictWriterBase):
 
 
 def pack(target, dictionary, title='', description='',
-         key_size=32768, record_size=65536, encoding='UTF-8', is_mdd=False):
+         key_size=32768, record_size=65536, encoding='UTF-8', is_mdd=False, is_sort=True):
     def callback(value):
         bar.update(value)
 
     writer = MDictWriter(
         dictionary, title=title, description=description,
         key_size=key_size, record_size=record_size,
-        encoding=encoding, is_mdd=is_mdd,
+        encoding=encoding, is_mdd=is_mdd, is_sort=is_sort,
     )
     bar = tqdm(total=len(writer._offset_table), unit='rec')
     outfile = open(target, "wb")

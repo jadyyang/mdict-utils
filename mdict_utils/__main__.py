@@ -1,12 +1,17 @@
+# FIXME: 这段是直接在 shell 中执行本文件，才需要的。纯粹是把本包添加到 syspath 中。
+import sys
+from os.path import abspath, join, dirname
+sys.path.insert(0, abspath(dirname(dirname(__file__))))
+
 import os.path
 import argparse
 import csv
 
-from . import about
-from . import reader
-from .writer import pack, pack_mdd_file, pack_mdx_txt, pack_mdx_db, pack_mdd_db, \
+from mdict_utils import about
+from mdict_utils import reader
+from mdict_utils.writer import pack, pack_mdd_file, pack_mdx_txt, pack_mdx_db, pack_mdd_db, \
     txt2db, db2txt
-from .utils import ElapsedTimer
+from mdict_utils.utils import ElapsedTimer
 
 
 total = 0
@@ -50,6 +55,7 @@ def run():
     group.add_argument('--key-size', metavar='<size>', type=int, default=32, help='Key block size. unit: KB')
     group.add_argument('--record-size', metavar='<size>', type=int, default=64, help='Record block size. unit: KB')
     group.add_argument('--key-file', metavar='<key file>', help='only pack some keys in the file')
+    group.add_argument('--sort', metavar='<yes|no>', help='whether sort keys in the file, default is yes')
 
     group = parser.add_argument_group('Compact HTML')
     group.add_argument('--convert-chtml', action='store_true', help='convert compact html.')
@@ -135,7 +141,7 @@ def run():
             print('Pack to "%s"' % args.mdict)
             pack(args.mdict, dictionary, title, description,
                  key_size=args.key_size * 1024, record_size=args.record_size * 1024,
-                 encoding=args.encoding, is_mdd=is_mdd)
+                 encoding=args.encoding, is_mdd=is_mdd, is_sort=args.sort != 'no')
     else:
         parser.print_help()
 
